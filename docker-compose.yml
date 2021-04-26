@@ -1,0 +1,43 @@
+# To run:
+# 1. Edit config.env
+# 2. docker-compose up --env-file=config.env
+
+version: "3.9"
+
+services:
+  elasticsearch-pubmed:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-pubmed:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - pubmed
+
+  elasticsearch-pubmed-update-daemon:
+    build: .
+    image: elasticsearch-pubmed-update-daemon:1.0
+    volumes:
+      - ${PUBMED_XML_DIRECTORY}:/data
+    depends_on:
+      - elasticsearch-pubmed
+    environment:
+      - REBUILD_DELAY
+    networks:
+      - pubmed
+
+volumes:
+  elasticsearch-pubmed:
+    driver: local
+
+networks:
+  pubmed:
+    driver: bridge
