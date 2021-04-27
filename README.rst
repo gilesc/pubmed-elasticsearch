@@ -9,15 +9,30 @@ Requirements: docker, docker-compose
 How to run:
 
 1. Clone & cd into the repo
+
 2. Create a local directory you want Pubmed XML to be saved to
-2. Edit config.env to point to that directory
-3. Run ./restart.sh
+
+3. Edit config.env to point to that directory
+
+4. Run ./restart.sh
 
 First, Pubmed XML files will be downloaded to your local directory. Then, they will be loaded into Elasticsearch. A daemon will download and index any update XML files (once weekly by default). 
 
-The elasticsearch service will run at $YOUR_IP:9200.
+The Elasticsearch service will run at $YOUR_IP:9200.
+
+You can query it; for example, in Python:
+
+.. code-block:: python
+
+    import elasticsearch
+
+    obj = elasticsearch.Elasticsearch(host="localhost")
+    hits = obj.search(index="pubmed", 
+        body={"query":{"match":{"Title":"caffeine"}}})["hits"]
+    for hit in hits:
+        print(hit)
 
 TODO
 ====
 
-- Add the complete list of XML fields
+- Add the complete list of XML fields -- currently, only ID, Title, Abstract, Authors, Citations, and MeSH terms are indexed. However, you can easily add your own in update_pubmed.py .
