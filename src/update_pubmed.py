@@ -100,7 +100,7 @@ def main():
     es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed")
     es.indices.create(index="pubmed", ignore=400)
 
-    XML_DIRECTORY = "/data"
+    XML_DIRECTORY = "/data/PubMed"
     it = parse_all(XML_DIRECTORY)
     elasticsearch.helpers.bulk(es, it, stats_only=True)
     es.indices.refresh(index="pubmed")
