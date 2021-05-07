@@ -12,6 +12,7 @@ RUN mkdir /script
 #ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/e1f115e4ca285c3c24e847c4dd4be955e0ed51c2/wait-for-it.sh /script/wait-for-it.sh
 COPY src/wait-for-it.sh /script/
 COPY src/update_pubmed.py /script/
+COPY src/update_pubtator.py /script/
 COPY src/daemon.sh /script/
 COPY src/docker-entrypoint.sh /script/
 RUN chmod +x /script/*
