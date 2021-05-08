@@ -10,10 +10,10 @@ while true; do
     wget -nv -nd -m ${NCBI_FTP}/pubmed/baseline/
     wget -nv -nd -m ${NCBI_FTP}/pubmed/updatefiles/
 
-    #cd /data
-    #mkdir -p OA
-    #cd OA
-    #wget -nv -nd -m ftp://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_bulk/
+    cd /data
+    mkdir -p OA
+    cd OA
+    wget -nv -nd -m ${NCBI_FTP}/pub/pmc/oa_bulk/
 
     cd /data
     mkdir -p PubTator
