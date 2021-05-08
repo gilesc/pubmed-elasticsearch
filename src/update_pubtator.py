@@ -4,6 +4,7 @@ import csv
 import collections
 
 import elasticsearch
+import elasticsearch.helpers
 
 def parse_concepts(handle):
     reader = csv.reader(handle, delimiter="\t")
@@ -17,12 +18,15 @@ def parse_concepts(handle):
                 if concept_id == "-":
                     continue
                 if type in ("Gene", "Species"):
-                    concept_id = int(concept_id)
+                    try:
+                        concept_id = int(concept_id)
+                    except ValueError:
+                        continue
                 o[type].add(concept_id)
         o = {k:list(v) for k,v in o.items()}
         if len(o) == 0:
             continue
-        yield id, o
+        yield id, {"Concept": o}
 
 def get_insert_op(id, attrs):
     return {

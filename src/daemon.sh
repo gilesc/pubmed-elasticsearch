@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 export TMPDIR=/data/tmp 
+NCBI_FTP=ftp://ftp.ncbi.nlm.nih.gov
 
 while true; do
     cd /data
     mkdir -p PubMed
     cd PubMed
-    wget -nv -nd -m ftp://ftp.ncbi.nlm.nih.gov/pubmed/baseline/
-    wget -nv -nd -m ftp://ftp.ncbi.nlm.nih.gov/pubmed/updatefiles/
+    wget -nv -nd -m ${NCBI_FTP}/pubmed/baseline/
+    wget -nv -nd -m ${NCBI_FTP}/pubmed/updatefiles/
 
     #cd /data
     #mkdir -p OA
@@ -17,7 +18,8 @@ while true; do
     cd /data
     mkdir -p PubTator
     cd PubTator
-    wget -nv -nd -m https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/bioconcepts2pubtatorcentral.gz
+    wget -nv -nd -m \
+        ${NCBI_FTP}/pub/lu/PubTatorCentral/bioconcepts2pubtatorcentral.gz
 
     echo "Updating PubMed core..."
     python /script/update_pubmed.py

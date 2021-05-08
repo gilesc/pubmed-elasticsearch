@@ -11,6 +11,19 @@ import lxml.etree as ET
 import elasticsearch
 import elasticsearch.helpers
 
+def filter_dict(D):
+    if isinstance(D, dict):
+        o = {}
+        for k,v in D.items():
+            x = filter_dict(v)
+            if x is not None:
+                o[k] = x
+        if len(o) == 0:
+            return
+        return o
+    else:
+        return D
+
 def text(node, pattern):
     obj = node.find(pattern)
     if obj is None:
@@ -58,18 +71,21 @@ def parse_file(path):
             else:
                 date = None
             
-            article = {
+            article = filter_dict({
                 "ID": int(text(c, "PMID")),
                 "Date": date,
                 "Author": get_authors(c),
                 "Title": text(c, "Article/ArticleTitle"),
                 "Abstract": text(c, "Article/Abstract/AbstractText"),
-                "Journal": text(c, "Article/Journal/Title"),
+                "Journal": {
+                    k:text(c, f"Article/Journal/{k}") for k
+                    in ["ISSN", "Title", "ISOAbbreviation"]
+                },
                 "MeSH": as_list(c, 
                     "MeshHeadingList/MeshHeading/DescriptorName", "UI"),
                 "Citations": list(map(int, as_list(node,
                     """PubmedData/ReferenceList/Reference/ArticleIdList/ArticleId[@IdType="pubmed"]""")))
-            }
+            })
             yield {
                 "_index": "pubmed",
                 "_op_type": "update",
