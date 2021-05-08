@@ -73,6 +73,7 @@ def parse_file(path):
             
             article = filter_dict({
                 "ID": int(text(c, "PMID")),
+                "DOI": text(c, """Article/ELocationID[@EIdType="doi"]"""),
                 "Date": date,
                 "Author": get_authors(c),
                 "Title": text(c, "Article/ArticleTitle"),
