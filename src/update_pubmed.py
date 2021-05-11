@@ -60,8 +60,10 @@ def get_authors(c):
 
 def parse_file(path):
     #ChemicalList
-    #Journals
     with gzip.open(path, "r") as h:
+        print(f"Parsing {path}....")
+        n = 0
+        n_error = 0
         for _,node in ET.iterparse(h, tag="PubmedArticle"):
             c = node.find("MedlineCitation")
             year, month, day = [text(c, f"DateCompleted/{x}") for x in 
@@ -71,7 +73,7 @@ def parse_file(path):
             else:
                 date = None
             
-            article = filter_dict({
+            article = {
                 "ID": int(text(c, "PMID")),
                 "DOI": text(c, """Article/ELocationID[@EIdType="doi"]"""),
                 "Date": date,
@@ -84,9 +86,16 @@ def parse_file(path):
                 },
                 "MeSH": as_list(c, 
                     "MeshHeadingList/MeshHeading/DescriptorName", "UI"),
-                "Citations": list(map(int, as_list(node,
+            }
+
+            n += 1
+            try:
+                article["Citations"] = list(map(int, as_list(node,
                     """PubmedData/ReferenceList/Reference/ArticleIdList/ArticleId[@IdType="pubmed"]""")))
-            })
+            except ValueError:
+                n_error += 1
+            except TypeError:
+                n_error += 1
             yield {
                 "_index": "pubmed",
                 "_op_type": "update",
@@ -94,10 +103,10 @@ def parse_file(path):
                 "doc_as_upsert": True,
                 "doc": article
             }
+        print(f"Finished {path} ({n - n_error} / {n} fully successful)")
 
 
 def eager_parse_file(path):
-    print(f"Parsing {path}....")
     return list(parse_file(path))
 
 def parse_all(rootdir, ncpu=None):
@@ -114,12 +123,15 @@ def parse_all(rootdir, ncpu=None):
     return itertools.chain.from_iterable(pool.imap(eager_parse_file, files))
 
 def main():
-    es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed")
+    es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed",
+            timeout=30, max_retries=10, retry_on_timeout=True)
+    es.indices.delete(index="pubmed")
     es.indices.create(index="pubmed", ignore=400)
 
     XML_DIRECTORY = "/data/PubMed"
     it = parse_all(XML_DIRECTORY)
     elasticsearch.helpers.bulk(es, it, stats_only=True)
+    print("Refreshing ES index...")
     es.indices.refresh(index="pubmed")
 
 if __name__ == "__main__":

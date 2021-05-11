@@ -1,13 +1,12 @@
 import gzip
 import itertools
-import csv
 import collections
 
 import elasticsearch
 import elasticsearch.helpers
 
 def parse_concepts(handle):
-    reader = csv.reader(handle, delimiter="\t")
+    reader = (line.split("\t") for line in handle)
     groups = itertools.groupby(reader, lambda row: row[0])
     for id, group in groups:
         id = int(id)
@@ -43,7 +42,9 @@ def insert_ops(path):
             yield get_insert_op(id, attrs)
 
 if __name__ == "__main__":
-    es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed")
+    es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed",
+        timeout=30, max_retries=10, retry_on_timeout=True
+    )
     path = "/data/PubTator/bioconcepts2pubtatorcentral.gz"
     it = insert_ops(path)
     elasticsearch.helpers.bulk(es, it, stats_only=True)

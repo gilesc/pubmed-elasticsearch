@@ -13,7 +13,7 @@ while true; do
     cd /data
     mkdir -p OA
     cd OA
-    wget -nv -nd -m "${NCBI_FTP}/pub/pmc/oa_bulk/" -A "*.xml.tar.gz"
+    #wget -nv -nd -m "${NCBI_FTP}/pub/pmc/oa_bulk/" -A "*.xml.tar.gz"
 
     cd /data
     mkdir -p PubTator
