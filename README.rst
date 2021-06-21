@@ -2,11 +2,12 @@
 elasticsearch-pubmed
 ====================
 
-Loads Pubmed into an Elasticsearch database running in docker, with automatic weekly updates.
+Loads Pubmed and PubTator entity annotations into an Elasticsearch database running in docker, with automatic weekly updates.
 
 Requirements: docker, docker-compose
 
-How to run:
+Usage
+=====
 
 1. Clone & cd into the repo
 
@@ -31,8 +32,3 @@ You can query it; for example, in Python:
         body={"query":{"match":{"Title":"caffeine"}}})["hits"]
     for hit in hits:
         print(hit)
-
-TODO
-====
-
-- Add the complete list of XML fields -- currently, only ID, Title, Abstract, Authors, Citations, and MeSH terms are indexed. However, you can easily add your own in update_pubmed.py .
