@@ -17,18 +17,3 @@ q = obj.search(
 for doc in q["hits"]["hits"]:
     src = doc["_source"]
     print(src["ID"], src["Date"], src["Author"][-1], src["Title"], src["Citations"], sep="\t")
-raise SystemExit
-
-#it = elasticsearch.helpers.scan(obj, 
-#        index="pubmed",
-#        query={"query": {"match_phrase": {"Journal.Title": "Aging Cell"}}},
-#)
-for doc in it:
-    src = doc["_source"]
-    if "Title" in src:
-        text = " ".join([
-            src.get("Title", "") or "",
-            src.get("Abstract", "") or ""
-        ]).strip()
-        if text:
-            print(src["ID"], src["Title"], sep="\t")

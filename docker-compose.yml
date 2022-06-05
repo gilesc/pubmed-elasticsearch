@@ -34,6 +34,16 @@ services:
     networks:
       - pubmed
 
+  medline-graph:
+    image: neo4j:3.5.3
+    ports: 
+      - 7474:7474
+      - 7687:7687
+    environment:
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max_size=1G
+
 volumes:
   elasticsearch-pubmed:
     external: true
