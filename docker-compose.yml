@@ -20,7 +20,7 @@ services:
     ports:
       - 9200:9200
     networks:
-      - pubmed
+      - medline
 
   elasticsearch-pubmed-update-daemon:
     build: .
@@ -32,7 +32,7 @@ services:
     environment:
       - REBUILD_DELAY
     networks:
-      - pubmed
+      - medline
 
   medline-graph:
     image: neo4j:3.5.3
@@ -43,11 +43,19 @@ services:
       - NEO4J_dbms_memory_pagecache_size=1G
       - NEO4J_dbms.memory.heap.initial_size=1G
       - NEO4J_dbms_memory_heap_max_size=1G
+    volumes:
+      - ./graph/conf:/conf
+      - ./graph/data:/data
+      - ./graph/import:/import
+      - ./graph/logs:/logs
+      - ./graph/plugins:/plugins
+    networks:
+      - medline
 
 volumes:
   elasticsearch-pubmed:
     external: true
 
 networks:
-  pubmed:
+  medline:
     driver: bridge
