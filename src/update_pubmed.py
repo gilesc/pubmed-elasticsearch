@@ -117,7 +117,7 @@ def parse_all(rootdir, ncpu=None):
     files = list(sorted(glob.glob(f"{rootdir}/pubmed{year}n*.xml.gz")))
     assert len(files) > 0
 
-    ncpu = ncpu or max(min(4, mp.cpu_count()) - 2, 1)
+    ncpu = ncpu or max(min(2, mp.cpu_count()) - 2, 1)
     pool = mp.Pool(ncpu)
 
     return itertools.chain.from_iterable(pool.imap(eager_parse_file, files))
