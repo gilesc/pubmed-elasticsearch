@@ -1,10 +1,8 @@
-FROM ubuntu:22.04
+FROM archlinux
 
-RUN apt update
-RUN apt-get install -y python3.10 wget curl libxml2-dev
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+RUN pacman -Syu
+RUN pacman python3 python3-pip python-lxml wget curl
 RUN pip install "elasticsearch==7.12.0"
-RUN pip install "lxml"
 RUN pip install tqdm
 
 RUN curl --retry 10 -S -L -o /bin/tini "https://github.com/krallin/tini/releases/download/v0.19.0/tini-amd64"

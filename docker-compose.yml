@@ -5,6 +5,7 @@
 version: "3.9"
 
 services:
+
   elasticsearch-pubmed:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
     environment:
@@ -19,8 +20,7 @@ services:
       - elasticsearch-pubmed:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-    networks:
-      - medline
+    network_mode: "host"
 
   elasticsearch-pubmed-update-daemon:
     build: .
@@ -31,31 +31,27 @@ services:
       - elasticsearch-pubmed
     environment:
       - REBUILD_DELAY
-    networks:
-      - medline
+    network_mode: "host"
 
-  medline-graph:
-    image: neo4j:3.5.3
-    ports: 
-      - 7474:7474
-      - 7687:7687
-    environment:
-      - NEO4J_dbms_memory_pagecache_size=1G
-      - NEO4J_dbms.memory.heap.initial_size=1G
-      - NEO4J_dbms_memory_heap_max_size=1G
-    volumes:
-      - ./graph/conf:/conf
-      - ./graph/data:/data
-      - ./graph/import:/import
-      - ./graph/logs:/logs
-      - ./graph/plugins:/plugins
-    networks:
-      - medline
+#  medline-graph:
+#    image: neo4j:3.5.3
+#    ports: 
+#      - 7474:7474
+#      - 7687:7687
+#    environment:
+#      - NEO4J_dbms_memory_pagecache_size=1G
+#      - NEO4J_dbms.memory.heap.initial_size=1G
+#      - NEO4J_dbms_memory_heap_max_size=1G
+#    volumes:
+#      - ./graph/conf:/conf
+#      - ./graph/data:/data
+#      - ./graph/import:/import
+#      - ./graph/logs:/logs
+#      - ./graph/plugins:/plugins
+#    networks:
+#      - medline
+
 
 volumes:
   elasticsearch-pubmed:
     external: true
-
-networks:
-  medline:
-    driver: bridge
