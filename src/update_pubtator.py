@@ -42,7 +42,7 @@ def insert_ops(path):
             yield get_insert_op(id, attrs)
 
 if __name__ == "__main__":
-    es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed",
+    es = elasticsearch.Elasticsearch(host="localhost",
         timeout=30, max_retries=10, retry_on_timeout=True
     )
     path = "/data/PubTator/bioconcepts2pubtatorcentral.gz"

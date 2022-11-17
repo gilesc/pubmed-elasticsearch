@@ -20,10 +20,12 @@ services:
       - elasticsearch-pubmed:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-    network_mode: "bridge"
+    network_mode: "host"
 
   elasticsearch-pubmed-update-daemon:
-    build: .
+    build: 
+      context: .
+      network: host
     image: elasticsearch-pubmed-update-daemon:1.0
     volumes:
       - ${PUBMED_XML_DIRECTORY}:/data
@@ -31,7 +33,7 @@ services:
       - elasticsearch-pubmed
     environment:
       - REBUILD_DELAY
-    network_mode: "bridge"
+    network_mode: "host"
 
 #  medline-graph:
 #    image: neo4j:3.5.3
