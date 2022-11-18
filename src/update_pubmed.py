@@ -123,7 +123,7 @@ def parse_all(rootdir, ncpu=None):
     return itertools.chain.from_iterable(pool.imap(eager_parse_file, files))
 
 def main():
-    es = elasticsearch.Elasticsearch(host="localhost",
+    es = elasticsearch.Elasticsearch(host="elasticsearch-pubmed",
             timeout=30, max_retries=10, retry_on_timeout=True)
     #es.indices.delete(index="pubmed")
     es.indices.create(index="pubmed", ignore=400)
