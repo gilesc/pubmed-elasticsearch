@@ -15,7 +15,10 @@ it = elasticsearch.helpers.scan(obj,
 )
 
 for doc in it:
-    src = doc["_source"]
-    source_id = src["ID"]
-    for target_id in src.get("Citations", []):
-        print(source_id, target_id, sep="\t")
+    try:
+        src = doc["_source"]
+        source_id = src["ID"]
+        for target_id in src.get("Citations", []):
+            print(source_id, target_id, sep="\t")
+    except:
+        pass

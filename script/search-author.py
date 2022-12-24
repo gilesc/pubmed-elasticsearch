@@ -21,6 +21,7 @@ q = obj.search(
 
 for doc in q["hits"]["hits"]:
     src = doc["_source"]
-    print(src["ID"], src["Date"], src["Author"][0], src["Author"][-1], sep="\t")
-    print("", src["Author"], sep="\t")
-    print("", src["Title"], sep="\t")
+    pprint.pprint(src)
+    #print(src["ID"], src["Date"], src["Author"][0], src["Author"][-1], sep="\t")
+    #print("", src["Author"], sep="\t")
+    #print("", src["Title"], sep="\t")
